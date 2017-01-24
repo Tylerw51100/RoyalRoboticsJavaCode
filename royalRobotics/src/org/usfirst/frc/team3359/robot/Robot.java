@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.buttons.Button;
 
 
 /**
@@ -26,6 +27,12 @@ public class Robot extends IterativeRobot {
 	 */
 	private Driveline driveline = null;
 
+  /**
+   * This attribute holds the robot's Lift object. It is used to
+   * enable the robot's lift.
+   */
+  private Lift lift = null;
+  
 	/**
 	 * This attribute holds the robot's left joystick object.
 	 */
@@ -36,6 +43,11 @@ public class Robot extends IterativeRobot {
 	 */
 	private Joystick rightStick = null;
 	
+	/**
+	 * This attribute holds the robot's lift button object.
+	 */
+	private Button liftButton = null;
+	
 	//Joysticks
 	private final static int LEFT_JOYSTICK_PORT = 0;
 	private final static int RIGHT_JOYSTICK_PORT = 1;
@@ -43,6 +55,9 @@ public class Robot extends IterativeRobot {
 	//Buttons
 	public final static int SHOOTER_BUTTON = 2;
 	public final static int LIFT_BUTTON = 3;
+		
+	//other
+	boolean isLiftEnabled = false;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -55,8 +70,10 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auto choices", chooser);
 
 		driveline = new Driveline();
+		lift = new Lift();
 		leftStick = new Joystick(LEFT_JOYSTICK_PORT);
 		rightStick = new Joystick(RIGHT_JOYSTICK_PORT);
+		liftButton = new Button(LIFT_BUTTON);
 	}
 
 	/**
@@ -103,16 +120,14 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-
-		// Read joystick inputs
-		
-		// If joystick was pushed, control driveline
+		// If joystick was pushed, control driveline.
 		driveline.setDrivePower(leftStick.getY(null), rightStick.getY(null));
 
-		// If joystick fire button pressed, turn on shooter
-
+		// If joystick fire button pressed, turn on shooter.
+    
 		// If joystick lift button pressed, turn on turn on lift.
-		
+		liftButton.whenPressed(isLiftEnabled == true);
+    lift.enableLift(isLiftEnabled);
 	}
 
 	/**
